@@ -1,0 +1,20 @@
+[
+  {
+    "title": "めいだいおみくじ",
+    "image": "gameA.jpg",
+    "url": "https://nabeeeeeeeeee525-glitch.github.io/omikuji/",
+    "category": "recent"
+  },
+  {
+    "title": "めいだい福笑い",
+    "image": "gameB.jpg",
+    "url": "https://nabeeeeeeeeee525-glitch.github.io/fukuwarai/",
+    "category": "new"
+  },
+  {
+    "title": "Game C",
+    "image": "gameC.jpg",
+    "url": "https://example.com/gameC",
+    "category": "recommend"
+  }
+]
