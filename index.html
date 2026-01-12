@@ -41,73 +41,77 @@
 
 <script>
   // JSON読み込み
-  fetch("games.json")
-    .then(res => res.json())
-    .then(games => {
-      const list = document.querySelector(".game-list");
-      const newGrid = document.querySelector(".game-grid.new");
-      const recentGrid = document.querySelector(".game-grid.recent");
-      const recommendGrid = document.querySelector(".game-grid.recommend");
-      const allGrid = document.querySelector(".game-grid.all");
+  // JSON読み込み
+fetch("games.json")
+  .then(res => res.json())
+  .then(games => {
+    const list = document.querySelector(".game-list");
+    const newGrid = document.querySelector(".game-grid.new");
+    const recentGrid = document.querySelector(".game-grid.recent");
+    const recommendGrid = document.querySelector(".game-grid.recommend");
+    const allGrid = document.querySelector(".game-grid.all");
 
-      games.forEach(game => {
-        // 左の一覧
-        const li = document.createElement("li");
-        li.textContent = game.title;
-        list.appendChild(li);
+    games.forEach(game => {
+      // 左の一覧
+      const li = document.createElement("li");
+      li.textContent = game.title;
+      list.appendChild(li);
 
-        // プルダウン（クリックで開閉）
-        li.addEventListener("click", () => {
-          const opened = li.querySelector(".dropdown");
-          if (opened) {
-            opened.remove();
-            return;
-          }
+      // 🔥 プルダウン（クリックで開閉）
+      li.addEventListener("click", () => {
+        // すでに開いているプルダウンがあれば閉じる
+        const opened = li.querySelector(".dropdown");
+        if (opened) {
+          opened.remove();
+          return;
+        }
 
-          const dropdown = document.createElement("div");
-          dropdown.className = "dropdown";
-          dropdown.innerHTML = `
-            <button class="launch-btn">起動する</button>
-          `;
-          li.appendChild(dropdown);
-
-          dropdown.querySelector(".launch-btn").addEventListener("click", () => {
-            window.open(game.url, "_blank");
-          });
-        });
-
-        // ゲームカード
-        const card = document.createElement("div");
-        card.className = "game-card";
-        card.innerHTML = `
-          <a href="${game.url}" target="_blank">
-            <img src="${game.image}">
-            <p>${game.title}</p>
-          </a>
+        // プルダウン作成
+        const dropdown = document.createElement("div");
+        dropdown.className = "dropdown";
+        dropdown.innerHTML = `
+          <button class="launch-btn">起動する</button>
         `;
+        li.appendChild(dropdown);
 
-        // カテゴリ別
-        if (game.category === "new") newGrid.appendChild(card.cloneNode(true));
-        if (game.category === "recent") recentGrid.appendChild(card.cloneNode(true));
-        if (game.category === "recommend") recommendGrid.appendChild(card.cloneNode(true));
-
-        // 全ゲーム
-        allGrid.appendChild(card);
+        // 起動ボタン
+        dropdown.querySelector(".launch-btn").addEventListener("click", () => {
+          window.open(game.url, "_blank");
+        });
       });
 
-      // 検索機能（大文字小文字無視・先頭一致）
-      const searchBox = document.querySelector(".search-box");
+      // ゲームカード
+      const card = document.createElement("div");
+      card.className = "game-card";
+      card.innerHTML = `
+        <a href="${game.url}" target="_blank">
+          <img src="${game.image}">
+          <p>${game.title}</p>
+        </a>
+      `;
+
+      // カテゴリ別
+      if (game.category === "new") newGrid.appendChild(card.cloneNode(true));
+      if (game.category === "recent") recentGrid.appendChild(card.cloneNode(true));
+      if (game.category === "recommend") recommendGrid.appendChild(card.cloneNode(true));
+
+      // 全ゲーム
+      allGrid.appendChild(card);
+    });
+
+    // 🔥 検索機能（大文字小文字無視・先頭一致）
+    const searchBox = document.querySelector(".search-box");
+
+    searchBox.addEventListener("input", () => {
+      const keyword = searchBox.value.toLowerCase();
       const gameItems = document.querySelectorAll(".game-list li");
 
-      searchBox.addEventListener("input", () => {
-        const keyword = searchBox.value.toLowerCase();
-
-        gameItems.forEach(item => {
-          const text = item.textContent.toLowerCase();
-          item.style.display = text.startsWith(keyword) ? "block" : "none";
-        });
+      gameItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.startsWith(keyword) ? "block" : "none";
       });
     });
+  });
 </script>
 
 </body>
