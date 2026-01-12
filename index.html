@@ -141,5 +141,25 @@
   </main>
 </div>
 
+<script>
+  const searchBox = document.querySelector(".search-box");
+  const gameItems = document.querySelectorAll(".game-list li");
+
+  searchBox.addEventListener("input", () => {
+    const keyword = searchBox.value.toLowerCase();
+
+    gameItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+
+      // 大文字小文字無視 ＋ 先頭一致
+      if (text.startsWith(keyword)) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
