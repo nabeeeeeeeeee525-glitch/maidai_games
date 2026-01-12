@@ -40,8 +40,7 @@
 </div>
 
 <script>
-  // JSON読み込み
-  // JSON読み込み
+// JSON読み込み
 fetch("games.json")
   .then(res => res.json())
   .then(games => {
@@ -57,16 +56,14 @@ fetch("games.json")
       li.textContent = game.title;
       list.appendChild(li);
 
-      // 🔥 プルダウン（クリックで開閉）
+      // 🔥 クリックでプルダウンを開く
       li.addEventListener("click", () => {
-        // すでに開いているプルダウンがあれば閉じる
         const opened = li.querySelector(".dropdown");
         if (opened) {
           opened.remove();
           return;
         }
 
-        // プルダウン作成
         const dropdown = document.createElement("div");
         dropdown.className = "dropdown";
         dropdown.innerHTML = `
@@ -78,6 +75,14 @@ fetch("games.json")
         dropdown.querySelector(".launch-btn").addEventListener("click", () => {
           window.open(game.url, "_blank");
         });
+      });
+
+      // 🔥 カーソルが li から外れたらプルダウンを閉じる
+      li.addEventListener("mouseleave", () => {
+        const opened = li.querySelector(".dropdown");
+        if (opened) {
+          opened.remove();
+        }
       });
 
       // ゲームカード
