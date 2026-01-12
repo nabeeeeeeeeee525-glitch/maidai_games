@@ -31,13 +31,12 @@
   </main>
 </div>
 
-<!-- ホバー詳細（PC専用） -->
+<!-- PC専用ホバー詳細 -->
 <div class="hover-detail" id="hoverDetail"></div>
 
 <script>
   const recentKey = "recentPlays";
 
-  // JSON読み込み
   fetch("games.json")
     .then(res => res.json())
     .then(games => {
@@ -45,15 +44,12 @@
       const recentGrid = document.querySelector(".game-grid.recent");
       const allGrid = document.querySelector(".game-grid.all");
 
-      // -------------------------
-      // 左メニュー生成
-      // -------------------------
+      // 左メニュー
       games.forEach(game => {
         const li = document.createElement("li");
         li.textContent = game.title;
         list.appendChild(li);
 
-        // プルダウン（クリックで開く）
         li.addEventListener("click", () => {
           const opened = li.querySelector(".dropdown");
           if (opened) {
@@ -73,29 +69,21 @@
           });
         });
 
-        // カーソル外で閉じる
         li.addEventListener("mouseleave", () => {
           const opened = li.querySelector(".dropdown");
           if (opened) opened.remove();
         });
       });
 
-      // -------------------------
       // ゲームカード生成
-      // -------------------------
       games.forEach(game => {
         const card = createGameCard(game);
         allGrid.appendChild(card);
       });
 
-      // -------------------------
-      // 最近プレイ欄を生成
-      // -------------------------
       updateRecentPlays(games, recentGrid);
 
-      // -------------------------
-      // 検索機能
-      // -------------------------
+      // 検索
       const searchBox = document.querySelector(".search-box");
       searchBox.addEventListener("input", () => {
         const keyword = searchBox.value.toLowerCase();
@@ -108,9 +96,6 @@
       });
     });
 
-  // -------------------------
-  // ゲームカード生成関数
-  // -------------------------
   function createGameCard(game) {
     const playKey = `playCount_${game.title}`;
     const timeKey = `playTime_${game.title}`;
@@ -125,7 +110,7 @@
         <img src="${game.image}">
       </div>
       <div class="card-bottom">
-        <p>${game.title}</p>
+        <p class="game-title">${game.title}</p>
         <div class="play-row">
           <button class="play-btn">▶ プレイ</button>
           <span class="play-count">${count} 回</span>
@@ -138,12 +123,10 @@
     card.querySelector(".play-btn").addEventListener("click", () => {
       playGame(game);
 
-      // プレイ回数
       count++;
       localStorage.setItem(playKey, count);
       card.querySelector(".play-count").textContent = `${count} 回`;
 
-      // プレイ時間開始
       const start = Date.now();
       localStorage.setItem("playingNow", JSON.stringify({
         title: game.title,
@@ -151,39 +134,21 @@
       }));
     });
 
-    // PC用ホバー詳細
+    // PC専用ホバー詳細
     card.addEventListener("mouseenter", () => {
       if (window.innerWidth > 768) showHoverDetail(game, card);
     });
     card.addEventListener("mouseleave", hideHoverDetail);
 
-    // スマホ用タップ詳細
+    // スマホではタップしても何も起きない（詳細を出さない）
     card.addEventListener("click", () => {
-      if (window.innerWidth <= 768) {
-        const detail = card.querySelector(".mobile-detail");
-        if (detail) {
-          detail.remove();
-          return;
-        }
-
-        const mobileDetail = document.createElement("div");
-        mobileDetail.className = "mobile-detail";
-        mobileDetail.innerHTML = `
-          <img src="${game.image}">
-          <p>${game.title}</p>
-          <p>プレイ回数：${count} 回</p>
-          <p>総プレイ時間：${formatTime(totalTime)}</p>
-        `;
-        card.appendChild(mobileDetail);
-      }
+      if (window.innerWidth <= 768) return;
     });
 
     return card;
   }
 
-  // -------------------------
-  // プレイ終了時（タブ閉じ）
-  // -------------------------
+  // プレイ終了時
   window.addEventListener("beforeunload", () => {
     const playing = JSON.parse(localStorage.getItem("playingNow") || "null");
     if (!playing) return;
@@ -200,9 +165,6 @@
     localStorage.removeItem("playingNow");
   });
 
-  // -------------------------
-  // プレイ処理
-  // -------------------------
   function playGame(game) {
     let recent = JSON.parse(localStorage.getItem(recentKey) || "[]");
 
@@ -215,9 +177,6 @@
     window.open(game.url, "_blank");
   }
 
-  // -------------------------
-  // 最近プレイ欄更新
-  // -------------------------
   function updateRecentPlays(games, recentGrid) {
     recentGrid.innerHTML = "";
 
@@ -232,18 +191,12 @@
     });
   }
 
-  // -------------------------
-  // プレイ時間フォーマット
-  // -------------------------
   function formatTime(sec) {
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
     return `${h}時間 ${m}分`;
   }
 
-  // -------------------------
-  // ホバー詳細（PC）
-  // -------------------------
   function showHoverDetail(game, card) {
     const detail = document.getElementById("hoverDetail");
     detail.innerHTML = `
@@ -261,9 +214,7 @@
     document.getElementById("hoverDetail").style.display = "none";
   }
 
-  // -------------------------
   // スマホ用メニュー
-  // -------------------------
   document.querySelector(".menu-toggle").addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("open");
   });
