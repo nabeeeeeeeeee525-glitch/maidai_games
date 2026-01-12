@@ -18,18 +18,8 @@
   <!-- 右側：カテゴリ別表示 -->
   <main class="main-content">
     <section class="category-section">
-      <h2>新着</h2>
-      <div class="game-grid new"></div>
-    </section>
-
-    <section class="category-section">
       <h2>最近プレイ</h2>
       <div class="game-grid recent"></div>
-    </section>
-
-    <section class="category-section">
-      <h2>おすすめ</h2>
-      <div class="game-grid recommend"></div>
     </section>
 
     <section class="category-section">
@@ -39,84 +29,213 @@
   </main>
 </div>
 
+<!-- 詳細ポップアップ -->
+<div class="hover-detail" id="hoverDetail"></div>
+
 <script>
-// JSON読み込み
-fetch("games.json")
-  .then(res => res.json())
-  .then(games => {
-    const list = document.querySelector(".game-list");
-    const newGrid = document.querySelector(".game-grid.new");
-    const recentGrid = document.querySelector(".game-grid.recent");
-    const recommendGrid = document.querySelector(".game-grid.recommend");
-    const allGrid = document.querySelector(".game-grid.all");
+  const recentKey = "recentPlays";
 
-    games.forEach(game => {
-      // 左の一覧
-      const li = document.createElement("li");
-      li.textContent = game.title;
-      list.appendChild(li);
+  // JSON読み込み
+  fetch("games.json")
+    .then(res => res.json())
+    .then(games => {
+      const list = document.querySelector(".game-list");
+      const recentGrid = document.querySelector(".game-grid.recent");
+      const allGrid = document.querySelector(".game-grid.all");
 
-      // 🔥 クリックでプルダウンを開く
-      li.addEventListener("click", () => {
-        const opened = li.querySelector(".dropdown");
-        if (opened) {
-          opened.remove();
-          return;
-        }
+      // -------------------------
+      // ① 左メニュー生成
+      // -------------------------
+      games.forEach(game => {
+        const li = document.createElement("li");
+        li.textContent = game.title;
+        list.appendChild(li);
 
-        const dropdown = document.createElement("div");
-        dropdown.className = "dropdown";
-        dropdown.innerHTML = `
-          <button class="launch-btn">起動する</button>
-        `;
-        li.appendChild(dropdown);
+        // プルダウン（クリックで開く）
+        li.addEventListener("click", () => {
+          const opened = li.querySelector(".dropdown");
+          if (opened) {
+            opened.remove();
+            return;
+          }
 
-        // 起動ボタン
-        dropdown.querySelector(".launch-btn").addEventListener("click", () => {
-          window.open(game.url, "_blank");
+          const dropdown = document.createElement("div");
+          dropdown.className = "dropdown";
+          dropdown.innerHTML = `
+            <button class="launch-btn">起動する</button>
+          `;
+          li.appendChild(dropdown);
+
+          dropdown.querySelector(".launch-btn").addEventListener("click", () => {
+            playGame(game);
+          });
+        });
+
+        // カーソル外で閉じる
+        li.addEventListener("mouseleave", () => {
+          const opened = li.querySelector(".dropdown");
+          if (opened) opened.remove();
         });
       });
 
-      // 🔥 カーソルが li から外れたらプルダウンを閉じる
-      li.addEventListener("mouseleave", () => {
-        const opened = li.querySelector(".dropdown");
-        if (opened) {
-          opened.remove();
-        }
+      // -------------------------
+      // ② ゲームカード生成
+      // -------------------------
+      games.forEach(game => {
+        const card = createGameCard(game);
+        allGrid.appendChild(card);
       });
 
-      // ゲームカード
-      const card = document.createElement("div");
-      card.className = "game-card";
-      card.innerHTML = `
-        <a href="${game.url}" target="_blank">
-          <img src="${game.image}">
-          <p>${game.title}</p>
-        </a>
-      `;
+      // -------------------------
+      // ③ 最近プレイ欄を生成
+      // -------------------------
+      updateRecentPlays(games, recentGrid);
 
-      // カテゴリ別
-      if (game.category === "new") newGrid.appendChild(card.cloneNode(true));
-      if (game.category === "recent") recentGrid.appendChild(card.cloneNode(true));
-      if (game.category === "recommend") recommendGrid.appendChild(card.cloneNode(true));
+      // -------------------------
+      // ④ 検索機能
+      // -------------------------
+      const searchBox = document.querySelector(".search-box");
+      searchBox.addEventListener("input", () => {
+        const keyword = searchBox.value.toLowerCase();
+        const gameItems = document.querySelectorAll(".game-list li");
 
-      // 全ゲーム
-      allGrid.appendChild(card);
-    });
-
-    // 🔥 検索機能（大文字小文字無視・先頭一致）
-    const searchBox = document.querySelector(".search-box");
-
-    searchBox.addEventListener("input", () => {
-      const keyword = searchBox.value.toLowerCase();
-      const gameItems = document.querySelectorAll(".game-list li");
-
-      gameItems.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.startsWith(keyword) ? "block" : "none";
+        gameItems.forEach(item => {
+          const text = item.textContent.toLowerCase();
+          item.style.display = text.startsWith(keyword) ? "block" : "none";
+        });
       });
     });
+
+  // -------------------------
+  // ゲームカード生成関数
+  // -------------------------
+  function createGameCard(game) {
+    const playKey = `playCount_${game.title}`;
+    const timeKey = `playTime_${game.title}`;
+
+    let count = Number(localStorage.getItem(playKey) || 0);
+    let totalTime = Number(localStorage.getItem(timeKey) || 0);
+
+    const card = document.createElement("div");
+    card.className = "game-card";
+    card.innerHTML = `
+      <div class="card-top">
+        <img src="${game.image}">
+      </div>
+      <div class="card-bottom">
+        <p>${game.title}</p>
+        <div class="play-row">
+          <button class="play-btn">▶ プレイ</button>
+          <span class="play-count">${count} 回</span>
+        </div>
+        <div class="play-time">総プレイ時間：${formatTime(totalTime)}</div>
+      </div>
+    `;
+
+    // プレイボタン
+    card.querySelector(".play-btn").addEventListener("click", () => {
+      playGame(game);
+
+      // プレイ回数
+      count++;
+      localStorage.setItem(playKey, count);
+      card.querySelector(".play-count").textContent = `${count} 回`;
+
+      // プレイ時間開始
+      const start = Date.now();
+      localStorage.setItem("playingNow", JSON.stringify({
+        title: game.title,
+        start: start
+      }));
+    });
+
+    // ホバー詳細
+    card.addEventListener("mouseenter", () => showHoverDetail(game, card));
+    card.addEventListener("mouseleave", hideHoverDetail);
+
+    return card;
+  }
+
+  // -------------------------
+  // プレイ終了時の処理（タブ閉じた時）
+  // -------------------------
+  window.addEventListener("beforeunload", () => {
+    const playing = JSON.parse(localStorage.getItem("playingNow") || "null");
+    if (!playing) return;
+
+    const timeKey = `playTime_${playing.title}`;
+    const start = playing.start;
+    const end = Date.now();
+    const diff = Math.floor((end - start) / 1000);
+
+    let total = Number(localStorage.getItem(timeKey) || 0);
+    total += diff;
+    localStorage.setItem(timeKey, total);
+
+    localStorage.removeItem("playingNow");
   });
+
+  // -------------------------
+  // プレイ処理（URLへ飛ぶ＋履歴保存）
+  // -------------------------
+  function playGame(game) {
+    // 最近プレイ更新
+    let recent = JSON.parse(localStorage.getItem(recentKey) || "[]");
+
+    recent = recent.filter(t => t !== game.title);
+    recent.unshift(game.title);
+    recent = recent.slice(0, 10);
+
+    localStorage.setItem(recentKey, JSON.stringify(recent));
+
+    window.open(game.url, "_blank");
+  }
+
+  // -------------------------
+  // 最近プレイ欄を更新
+  // -------------------------
+  function updateRecentPlays(games, recentGrid) {
+    recentGrid.innerHTML = "";
+
+    let recent = JSON.parse(localStorage.getItem(recentKey) || "[]");
+
+    recent.forEach(title => {
+      const game = games.find(g => g.title === title);
+      if (!game) return;
+
+      const card = createGameCard(game);
+      recentGrid.appendChild(card);
+    });
+  }
+
+  // -------------------------
+  // プレイ時間フォーマット
+  // -------------------------
+  function formatTime(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    return `${h}時間 ${m}分`;
+  }
+
+  // -------------------------
+  // ホバー詳細表示
+  // -------------------------
+  function showHoverDetail(game, card) {
+    const detail = document.getElementById("hoverDetail");
+    detail.innerHTML = `
+      <img src="${game.image}">
+      <p>${game.title}</p>
+    `;
+
+    const rect = card.getBoundingClientRect();
+    detail.style.left = rect.right + 10 + "px";
+    detail.style.top = rect.top + "px";
+    detail.style.display = "block";
+  }
+
+  function hideHoverDetail() {
+    document.getElementById("hoverDetail").style.display = "none";
+  }
 </script>
 
 </body>
