@@ -5,6 +5,34 @@ body {
   color: #c7d5e0;
 }
 
+/* 上部ヘッダー */
+.top-header {
+  width: 100%;
+  background-color: #0f141a;
+  color: #c7d5e0;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #2a475e;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ヘッダーの高さ分だけ下に余白を作る */
+.library-layout {
+  margin-top: 10px;
+}
+
+/* スマホ用ヘッダー調整 */
+@media (max-width: 768px) {
+  .top-header {
+    font-size: 30px;
+    padding: 20px 0;
+  }
+}
 .library-layout {
   display: flex;
   height: 100vh;
