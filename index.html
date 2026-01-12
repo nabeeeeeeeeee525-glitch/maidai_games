@@ -3,99 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>My Game Library</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background-color: #1b2838;
-      color: #c7d5e0;
-    }
-
-    .library-layout {
-      display: flex;
-      height: 100vh;
-    }
-
-    /* 左側サイドバー */
-    .sidebar {
-      width: 240px;
-      background-color: #171a21;
-      padding: 16px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-
-    .search-box {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      background-color: #2a475e;
-      border: none;
-      color: #c7d5e0;
-    }
-
-    .game-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .game-list li {
-      padding: 6px 0;
-      border-bottom: 1px solid #2a475e;
-      cursor: pointer;
-    }
-
-    /* 右側メイン表示 */
-    .main-content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .category-section {
-      margin-bottom: 32px;
-    }
-
-    .category-section h2 {
-      font-size: 20px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #2a475e;
-      padding-bottom: 4px;
-    }
-
-    /* ゲームカード表示 */
-    .game-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .game-card {
-      width: 160px;
-      background-color: #2a475e;
-      border-radius: 4px;
-      overflow: hidden;
-      text-align: center;
-      transition: transform 0.2s;
-    }
-
-    .game-card:hover {
-      transform: scale(1.05);
-    }
-
-    .game-card img {
-      width: 100%;
-      height: 90px;
-      object-fit: cover;
-    }
-
-    .game-card p {
-      margin: 8px 0;
-      font-size: 14px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -147,6 +55,26 @@
         const li = document.createElement("li");
         li.textContent = game.title;
         list.appendChild(li);
+
+        // プルダウン（クリックで開閉）
+        li.addEventListener("click", () => {
+          const opened = li.querySelector(".dropdown");
+          if (opened) {
+            opened.remove();
+            return;
+          }
+
+          const dropdown = document.createElement("div");
+          dropdown.className = "dropdown";
+          dropdown.innerHTML = `
+            <button class="launch-btn">起動する</button>
+          `;
+          li.appendChild(dropdown);
+
+          dropdown.querySelector(".launch-btn").addEventListener("click", () => {
+            window.open(game.url, "_blank");
+          });
+        });
 
         // ゲームカード
         const card = document.createElement("div");
