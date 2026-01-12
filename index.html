@@ -9,8 +9,10 @@
 <body>
 
 <div class="library-layout">
-  <!-- 左側：ゲーム一覧＋検索 -->
+
+  <!-- 左側：ゲーム一覧＋検索（スマホでは折りたたみ） -->
   <aside class="sidebar">
+    <div class="menu-toggle">≡ メニュー</div>
     <input type="text" placeholder="ゲーム検索…" class="search-box">
     <ul class="game-list"></ul>
   </aside>
@@ -29,7 +31,7 @@
   </main>
 </div>
 
-<!-- 詳細ポップアップ -->
+<!-- ホバー詳細（PC専用） -->
 <div class="hover-detail" id="hoverDetail"></div>
 
 <script>
@@ -44,7 +46,7 @@
       const allGrid = document.querySelector(".game-grid.all");
 
       // -------------------------
-      // ① 左メニュー生成
+      // 左メニュー生成
       // -------------------------
       games.forEach(game => {
         const li = document.createElement("li");
@@ -79,7 +81,7 @@
       });
 
       // -------------------------
-      // ② ゲームカード生成
+      // ゲームカード生成
       // -------------------------
       games.forEach(game => {
         const card = createGameCard(game);
@@ -87,12 +89,12 @@
       });
 
       // -------------------------
-      // ③ 最近プレイ欄を生成
+      // 最近プレイ欄を生成
       // -------------------------
       updateRecentPlays(games, recentGrid);
 
       // -------------------------
-      // ④ 検索機能
+      // 検索機能
       // -------------------------
       const searchBox = document.querySelector(".search-box");
       searchBox.addEventListener("input", () => {
@@ -149,15 +151,38 @@
       }));
     });
 
-    // ホバー詳細
-    card.addEventListener("mouseenter", () => showHoverDetail(game, card));
+    // PC用ホバー詳細
+    card.addEventListener("mouseenter", () => {
+      if (window.innerWidth > 768) showHoverDetail(game, card);
+    });
     card.addEventListener("mouseleave", hideHoverDetail);
+
+    // スマホ用タップ詳細
+    card.addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        const detail = card.querySelector(".mobile-detail");
+        if (detail) {
+          detail.remove();
+          return;
+        }
+
+        const mobileDetail = document.createElement("div");
+        mobileDetail.className = "mobile-detail";
+        mobileDetail.innerHTML = `
+          <img src="${game.image}">
+          <p>${game.title}</p>
+          <p>プレイ回数：${count} 回</p>
+          <p>総プレイ時間：${formatTime(totalTime)}</p>
+        `;
+        card.appendChild(mobileDetail);
+      }
+    });
 
     return card;
   }
 
   // -------------------------
-  // プレイ終了時の処理（タブ閉じた時）
+  // プレイ終了時（タブ閉じ）
   // -------------------------
   window.addEventListener("beforeunload", () => {
     const playing = JSON.parse(localStorage.getItem("playingNow") || "null");
@@ -176,10 +201,9 @@
   });
 
   // -------------------------
-  // プレイ処理（URLへ飛ぶ＋履歴保存）
+  // プレイ処理
   // -------------------------
   function playGame(game) {
-    // 最近プレイ更新
     let recent = JSON.parse(localStorage.getItem(recentKey) || "[]");
 
     recent = recent.filter(t => t !== game.title);
@@ -192,7 +216,7 @@
   }
 
   // -------------------------
-  // 最近プレイ欄を更新
+  // 最近プレイ欄更新
   // -------------------------
   function updateRecentPlays(games, recentGrid) {
     recentGrid.innerHTML = "";
@@ -218,7 +242,7 @@
   }
 
   // -------------------------
-  // ホバー詳細表示
+  // ホバー詳細（PC）
   // -------------------------
   function showHoverDetail(game, card) {
     const detail = document.getElementById("hoverDetail");
@@ -236,6 +260,13 @@
   function hideHoverDetail() {
     document.getElementById("hoverDetail").style.display = "none";
   }
+
+  // -------------------------
+  // スマホ用メニュー
+  // -------------------------
+  document.querySelector(".menu-toggle").addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("open");
+  });
 </script>
 
 </body>
