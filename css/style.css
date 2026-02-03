@@ -5,14 +5,61 @@ body {
   color: #c7d5e0;
 }
 
-/* お気に入りタイトル */
+/* 上部ヘッダー */
+.top-header {
+  width: 100%;
+  background-color: #0f141a;
+  color: #c7d5e0;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 26px;
+  font-weight: bold;
+  border-bottom: 1px solid #2a475e;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.library-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* 左側サイドバー */
+.sidebar {
+  width: 280px;
+  background-color: #171a21;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 6px;
+}
+
+.menu-toggle {
+  display: none;
+  background: #2a475e;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+/* お気に入り */
 .fav-title {
   margin-top: 10px;
   font-size: 18px;
   color: #ffd700;
 }
 
-/* お気に入りリスト */
 .favorite-list {
   max-height: 150px;
   overflow-y: auto;
@@ -26,33 +73,29 @@ body {
   color: #ffd700;
 }
 
-/* お気に入りボタン */
-.fav-btn {
-  font-size: 20px;
+/* 検索 */
+.search-box {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 14px;
+  background-color: #2a475e;
+  border: none;
+  color: #c7d5e0;
+  font-size: 16px;
+}
+
+/* ゲーム一覧 */
+.game-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #2a475e;
   cursor: pointer;
-  color: #666;
-  margin-left: auto;
-  transition: 0.2s;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.fav-btn.on {
-  color: #ffd700;
-}
-
-/* NEWバッジ */
-.new-badge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: #ff4757;
-  color: white;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-/* ランキングボックス */
+/* ランキング */
 .ranking-box {
   margin-top: 20px;
   padding: 10px;
@@ -71,94 +114,6 @@ body {
   padding: 6px 0;
   border-bottom: 1px solid #3b5873;
   font-size: 14px;
-}
-
-/* 上部ヘッダー */
-.top-header {
-  width: 100%;
-  background-color: #0f141a;
-  color: #c7d5e0;
-  text-align: center;
-  padding: 16px 0;
-  font-size: 26px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  border-bottom: 1px solid #2a475e;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* ヘッダーの高さ分だけ下に余白を作る */
-.library-layout {
-  margin-top: 10px;
-}
-
-/* スマホ用ヘッダー調整 */
-@media (max-width: 768px) {
-  .top-header {
-    font-size: 30px;
-    padding: 20px 0;
-  }
-}
-.library-layout {
-  display: flex;
-  height: 100vh;
-}
-
-/* 左側サイドバー */
-.sidebar {
-  width: 280px;
-  background-color: #171a21;
-  padding: 16px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.menu-toggle {
-  display: none;
-  background: #2a475e;
-  padding: 14px;
-  text-align: center;
-  cursor: pointer;
-  margin-bottom: 12px;
-  font-size: 20px;
-}
-
-.search-box {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 14px;
-  background-color: #2a475e;
-  border: none;
-  color: #c7d5e0;
-  font-size: 16px;
-}
-
-.game-list li {
-  padding: 10px 0;
-  border-bottom: 1px solid #2a475e;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-/* プルダウン */
-.dropdown {
-  padding: 10px;
-  background-color: #2a475e;
-  border-left: 2px solid #66c0f4;
-  margin-top: 4px;
-}
-
-.launch-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: #66c0f4;
-  border: none;
-  color: #000;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 16px;
 }
 
 /* メイン */
@@ -193,10 +148,27 @@ body {
   transform: scale(1.05);
 }
 
+.card-top {
+  position: relative;
+}
+
 .card-top img {
   width: 100%;
   height: 100px;
   object-fit: cover;
+}
+
+/* NEWバッジ */
+.new-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .card-bottom {
@@ -208,6 +180,7 @@ body {
   margin-bottom: 8px;
 }
 
+/* プレイ行 */
 .play-row {
   display: flex;
   align-items: center;
@@ -224,8 +197,17 @@ body {
   font-size: 15px;
 }
 
-.play-count {
-  font-size: 14px;
+/* お気に入り星（常時表示） */
+.fav-btn {
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  margin-left: auto;
+  transition: 0.2s;
+}
+
+.fav-btn.on {
+  color: #ffd700;
 }
 
 .play-time {
@@ -249,9 +231,7 @@ body {
   border-radius: 4px;
 }
 
-/* ============================
-   スマホ用レイアウト
-   ============================ */
+/* スマホ用レイアウト */
 @media (max-width: 768px) {
 
   .library-layout {
@@ -268,11 +248,11 @@ body {
     display: block;
   }
 
-  .game-list {
+  .sidebar-scroll {
     display: none;
   }
 
-  .sidebar.open .game-list {
+  .sidebar.open .sidebar-scroll {
     display: block;
   }
 
