@@ -5,6 +5,75 @@ body {
   color: #c7d5e0;
 }
 
+/* お気に入りタイトル */
+.fav-title {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #ffd700;
+}
+
+/* お気に入りリスト */
+.favorite-list {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.favorite-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid #3b5873;
+  cursor: pointer;
+  color: #ffd700;
+}
+
+/* お気に入りボタン */
+.fav-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  transition: 0.2s;
+}
+
+.fav-btn.on {
+  color: #ffd700;
+}
+/* NEWバッジ */
+.new-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* ランキングボックス */
+.ranking-box {
+  margin-top: 20px;
+  padding: 10px;
+  background: #2a475e;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ranking-box h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.ranking-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid #3b5873;
+  font-size: 14px;
+}
+
 /* 上部ヘッダー */
 .top-header {
   width: 100%;
