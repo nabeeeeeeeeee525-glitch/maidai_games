@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    
+
 <header class="top-header">
   Maydie Games
 </header>
@@ -26,6 +26,10 @@
   <!-- 右側：カテゴリ別表示 -->
   <main class="main-content">
     <section class="category-section">
+      <h2>新着ゲーム</h2>
+      <div class="game-grid new"></div>
+    </section>
+    <section class="category-section">
       <h2>最近プレイ</h2>
       <div class="game-grid recent"></div>
     </section>
@@ -43,43 +47,52 @@
 <script>
   const recentKey = "recentPlays";
 
-  fetch("games.json")
+  fetch("games.json?ver=" + Date.now())
     .then(res => res.json())
     .then(games => {
       const list = document.querySelector(".game-list");
       const recentGrid = document.querySelector(".game-grid.recent");
       const allGrid = document.querySelector(".game-grid.all");
+      const newGrid = document.querySelector(".game-grid.new");
 
-      // 左メニュー
-      games.forEach(game => {
-        const li = document.createElement("li");
-        li.textContent = game.title;
-        list.appendChild(li);
+// 左メニュー
+games.forEach(game => {
+  const li = document.createElement("li");
+  li.textContent = game.title;
+  list.appendChild(li);
 
-        li.addEventListener("click", () => {
-          const opened = li.querySelector(".dropdown");
-          if (opened) {
-            opened.remove();
-            return;
-          }
+  li.addEventListener("click", () => {
+    const opened = li.querySelector(".dropdown");
+    if (opened) {
+      opened.remove();
+      return;
+    }
 
-          const dropdown = document.createElement("div");
-          dropdown.className = "dropdown";
-          dropdown.innerHTML = `
-            <button class="launch-btn">起動する</button>
-          `;
-          li.appendChild(dropdown);
+    const dropdown = document.createElement("div");
+    dropdown.className = "dropdown";
+    dropdown.innerHTML = `
+      <button class="launch-btn">起動する</button>
+    `;
+    li.appendChild(dropdown);
 
-          dropdown.querySelector(".launch-btn").addEventListener("click", () => {
-            playGame(game);
-          });
-        });
+    dropdown.querySelector(".launch-btn").addEventListener("click", () => {
+      playGame(game);
+    });
+  });
 
-        li.addEventListener("mouseleave", () => {
-          const opened = li.querySelector(".dropdown");
-          if (opened) opened.remove();
-        });
-      });
+  li.addEventListener("mouseleave", () => {
+    const opened = li.querySelector(".dropdown");
+    if (opened) opened.remove();
+  });
+});
+
+// ★ new カテゴリのカード生成（ここに置くのがベスト）
+games.forEach(game => {
+  if (game.category === "new") {
+    const card = createGameCard(game);
+    newGrid.appendChild(card);
+  }
+});
 
       // ゲームカード生成
       games.forEach(game => {
