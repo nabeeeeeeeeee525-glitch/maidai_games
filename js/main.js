@@ -94,14 +94,16 @@ function createGameCard(game, isNew, games) {
     <div class="card-top">
       <img src="${game.image}">
       ${isNew ? `<span class="new-badge">NEW</span>` : ""}
-      <span class="fav-btn ${isFav ? "on" : ""}">★</span>
     </div>
     <div class="card-bottom">
       <p class="game-title">${game.title}</p>
+
       <div class="play-row">
         <button class="play-btn">▶ プレイ</button>
         <span class="play-count">${count} 回</span>
+        <span class="fav-btn ${isFav ? "on" : ""}">★</span>
       </div>
+
       <div class="play-time">総プレイ時間：${formatTime(totalTime)}</div>
     </div>
   `;

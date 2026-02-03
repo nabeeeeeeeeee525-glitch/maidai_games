@@ -28,18 +28,17 @@ body {
 
 /* お気に入りボタン */
 .fav-btn {
-  position: absolute;
-  top: 6px;
-  left: 6px;
   font-size: 20px;
   cursor: pointer;
   color: #666;
+  margin-left: auto;
   transition: 0.2s;
 }
 
 .fav-btn.on {
   color: #ffd700;
 }
+
 /* NEWバッジ */
 .new-badge {
   position: absolute;
@@ -109,7 +108,7 @@ body {
 
 /* 左側サイドバー */
 .sidebar {
-  width: 240px;
+  width: 280px;
   background-color: #171a21;
   padding: 16px;
   box-sizing: border-box;
