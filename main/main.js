@@ -45,14 +45,14 @@ fetch("games.json?ver=" + Date.now())
     // 新着ゲーム
     games.forEach(game => {
       if (game.category === "new") {
-        const card = createGameCard(game, true);
+        const card = createGameCard(game, true, games);
         newGrid.appendChild(card);
       }
     });
 
     // すべてのゲーム
     games.forEach(game => {
-      const card = createGameCard(game, false);
+      const card = createGameCard(game, false, games);
       allGrid.appendChild(card);
     });
 
@@ -78,7 +78,7 @@ fetch("games.json?ver=" + Date.now())
     });
   });
 
-function createGameCard(game, isNew) {
+function createGameCard(game, isNew, games) {
   const playKey = `playCount_${game.title}`;
   const timeKey = `playTime_${game.title}`;
   const favs = JSON.parse(localStorage.getItem(favKey) || "[]");
@@ -111,7 +111,7 @@ function createGameCard(game, isNew) {
   favBtn.addEventListener("click", () => {
     toggleFavorite(game.title);
     favBtn.classList.toggle("on");
-    updateFavorites(JSON.parse(localStorage.getItem("games") || "[]"), document.querySelector(".favorite-list"));
+    updateFavorites(games, document.querySelector(".favorite-list"));
   });
 
   // プレイボタン
@@ -216,7 +216,7 @@ function updateRecentPlays(games, recentGrid) {
       const game = games.find(g => g.title === item.title);
       if (!game) return;
 
-      const card = createGameCard(game, false);
+      const card = createGameCard(game, false, games);
       recentGrid.appendChild(card);
     });
 }
